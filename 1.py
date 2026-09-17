@@ -11,5 +11,9 @@ def fetch_by_index(idx: str | datetime.datetime) -> pd.Series:
     return df.loc[idx]
 
 
+def fetch_second_to_last() -> pd.Series:
+    return df.iloc[-2]
+
 print(fetch_by_index('20190218'))
 print(fetch_by_index(datetime.datetime(2019, 2, 18)))
+print(fetch_second_to_last())
