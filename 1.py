@@ -6,7 +6,10 @@ dates = pd.date_range('20190214', periods=6)
 numbers = np.matrix([[ 101, 103], [105.5, 75], [102, 80.3], [100, 85], [110, 98], [109.6, 125.7 ]] )
 df = pd.DataFrame(numbers, index=dates, columns=['A','B'])
 
-def fetch_by_index(idx: str):
+
+def fetch_by_index(idx: str | datetime.datetime) -> pd.Series:
     return df.loc[idx]
 
+
 print(fetch_by_index('20190218'))
+print(fetch_by_index(datetime.datetime(2019, 2, 18)))
