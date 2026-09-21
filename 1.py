@@ -8,50 +8,124 @@ numbers = np.matrix([[ 101, 103], [105.5, 75], [102, 80.3], [100, 85], [110, 98]
 frame = pd.DataFrame(numbers, index=dates, columns=['A','B'])
 
 
-def fetch_by_index(df: pd.DataFrame, idx: str | datetime.datetime) -> pd.Series:
-    return df.loc[idx]
+class DataFrameUzduotys:
+    def __init__(self, df: pd.DataFrame) -> None:
+        self.df = df
+
+    def pirma_antra(self, idx: str | datetime.datetime) -> pd.Series:
+        """
+        gauti eilutę, kurios indekso data yra stringas '2019-02-18'
+        gauti eilutę, kurios indekso data yra datetime.datetime(2019, 2, 18)
+        """
+        return self.df.loc[idx]
+
+    def trecia(self):
+        """
+        gauti eilutę, kuri yra priešpaskutinė nuo galo (nenaudoti indekso)
+        """
+        return self.df.iloc[-2]
+
+    def ketvirta(self):
+        """
+        gauti pirmas 2 eilutes ir stulpelį 'B' (nenaudoti indekso)
+        """
+        return self.df['B'][:2]
+
+    def penkta(self):
+        """
+        išrūšiuoti df pagal 'B' stulpelį mažėjančia tvarka
+        """
+        return self.df.sort_values(by='B', ascending=False)
+
+    def sesta(self):
+        """
+        rasti stulpelio 'A' didžiausią reikšmę
+        """
+        return self.df.max(axis=0)['A']
+
+    def septinta(self):
+        """
+        padvigubinti stulpelio 'A' didžiausią reikšmę (randate, kuri didžiausia reikšmė ir priskiriate dvigubai didesnę naują reikšmę)
+        :return:
+        """
+        max_val = self.df.max(axis=0)['A']
+        self.df.loc[self.df['A'] == max_val, 'A'] = max_val * 2
+        return
+
+    def astunta(self):
+        """
+        gauti eilutes, kur stulpelio 'A' reikšmės didesnės už 105
+        """
+        return self.df[self.df['A'] > 105]
+
+    def devinta(self):
+        self.df.plot(y='A')
+        return
+
+    def desimta(self):
+        self.df.drop(index=self.df.index[self.df['A'] < self.df['B']], inplace=True)
+        return
 
 
-def fetch_second_to_last(df: pd.DataFrame) -> pd.Series:
-    return df.iloc[-2]
+# DATAFRAME
 
+uzd = DataFrameUzduotys(frame)
 
-def fetch_first_two(df: pd.DataFrame) -> pd.Series:
-    return df['B'].head(2)
+print(f"""# 1. gauti eilutę, kurios indekso data yra stringas '2019-02-18'
+Atsakymas:
+{uzd.pirma_antra('2019-02-18')}
+\n""")
 
+print(f"""# 2. gauti eilutę, kurios indekso data yra datetime.datetime(2019, 2, 18)
+Atsakymas:
+{uzd.pirma_antra(datetime.datetime(2019, 2, 18))}
+\n""")
 
-def desc_b(df: pd.DataFrame) -> pd.DataFrame:
-    return df.sort_values(by='B', ascending=False)
+print(f"""# 3. gauti eilutę, kuri yra priešpaskutinė nuo galo (nenaudoti indekso)
+Atsakymas:
+{uzd.trecia()}
+\n""")
 
+print(f"""# 4. gauti pirmas 2 eilutes ir stulpelį 'B' (nenaudoti indekso)
+Atsakymas:
+{uzd.ketvirta()}
+\n""")
 
-def filter_a(df: pd.DataFrame) -> pd.DataFrame:
-    return df[df['A'] > 105]
+print(f"""# 5. išrūšiuoti df pagal 'B' stulpelį mažėjančia tvarka
+Atsakymas:
+{uzd.penkta()}
+\n""")
 
+print(f"""# 6. rasti stulpelio 'A' didžiausią reikšmę
+Atsakymas:
+{uzd.sesta()}
+\n""")
 
-def plot_a(df: pd.DataFrame) -> None:
-    df.plot(y='A')
-    plt.show()
+uzd.septinta()
+print(f"""# 7. padvigubinti stulpelio 'A' didžiausią reikšmę (randate, kuri didžiausia reikšmė ir priskiriate dvigubai didesnę naują reikšmę)
+Atsakymas:
+{uzd.df}
+\n""")
+
+print(f"""# 8. gauti eilutes, kur stulpelio 'A' reikšmės didesnės už 105
+Atsakymas:
+{uzd.astunta()}
+\n""")
+
+uzd.devinta()
+print(f"""# 9. nupiešti (plot) stulpelio 'A' reikšmes
+Atsakymas:
+\n""")
+
+uzd.desimta()
+print(f"""# 10. ištrinti eilutes, kur stulpelio 'B' reikšmės yra didesnės už stulpelio 'A' reikšmes
+Atsakymas:
+{uzd.df}
+\n""")
+
+plt.show()
+
+# NUMPY
+
+def pirma():
     return
-
-
-def remove_a_less_than_b(df: pd.DataFrame):
-    df.drop(index=df.index[df['A'] < df['B']], inplace=True)
-    return
-
-print(fetch_by_index(frame, '20190218'))
-print('\n')
-print(fetch_by_index(frame, datetime.datetime(2019, 2, 18)))
-print('\n')
-print(fetch_second_to_last(frame))
-print('\n')
-print(fetch_first_two(frame))
-print('\n')
-print(desc_b(frame))
-print('\n')
-print(filter_a(frame))
-print('\n')
-print(plot_a(frame))
-print('\n')
-remove_a_less_than_b(frame)
-print(frame)
-print('\n')
