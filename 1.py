@@ -128,4 +128,112 @@ plt.show()
 # NUMPY
 
 def pirma():
-    return
+    a = np.random.randint(low=1, high=10, size=10)
+    b = np.random.randint(low=1, high=10, size=10)
+    return a.sum() + b.sum()
+
+
+def antra():
+    a = np.random.randint(low=-10, high=10, size=10)
+    a[a > 0] = 0
+    return a
+
+
+def trecia():
+    a = np.random.randint(low=1, high=10, size=10)
+    b = a[a <= 6]
+    return a, b
+
+
+def ketvirta():
+    a = np.random.randint(low=1, high=5, size=10)
+    print(a)
+    return a[1:][a[1:] == a[:-1]]
+
+
+def penkta():
+    a = np.random.random(size=10)
+    b = np.random.random(size=10)
+    return a[a > b]
+
+
+def sesta():
+    a = np.random.randint(low=1, high=10, size=10)
+    print(a)
+    a[:-1] = a[1:]
+    return a
+
+
+def septinta():
+    a = np.random.randint(low=1, high=10, size=10)
+    print(a)
+    return a[::-1]
+
+
+def astunta():
+    a = np.random.randint(low=1, high=10, size=10)
+    a[1::2] = 0
+    return a
+
+
+def devinta():
+    a = np.random.rand(10, 20)
+    return np.mean(a, axis=1), np.mean(a, axis=0)
+
+
+def desimta():
+    a = np.random.randint(1, 10, (10, 10))
+    print(a)
+    return a[np.arange(10), np.arange(10)]
+
+
+
+print(f"""# 1. suma 2 vektorių
+Atsakymas:
+{pirma()}
+\n""")
+
+print(f"""# 2. anuliavimas teigiamų elementų
+Atsakymas:
+{antra()}
+\n""")
+
+print(f"""# 3. išmetimas > 6
+Atsakymas:
+{trecia()}
+\n""")
+
+print(f"""# 4. dviejų vienodų šalia esančių radimas
+Atsakymas:
+{ketvirta()}
+\n""")
+
+print(f"""# 5. elementų, kur a elementai didesni už b elementus, radimas
+Atsakymas:
+{penkta()}
+\n""")
+
+print(f"""# 6. elementų perstumimas vektoriuje pakartojant paskutinį
+Atsakymas:
+{sesta()}
+\n""")
+
+print(f"""# 7. sukeitimas elementų eilės tvarkos
+Atsakymas:
+{septinta()}
+\n""")
+
+print(f"""# 8. kas antro elemento užnulinimas
+Atsakymas:
+{astunta()}
+\n""")
+
+print(f"""# 9. rasti matricos eiluciu vidurkius, rasti matricos stulpeliu vidurkius
+Atsakymas:
+{devinta()}
+\n""")
+
+print(f"""# 10. gauti matricos diagonalinius elementus - negaliam panaudoti daug
+Atsakymas:
+{desimta()}
+\n""")
