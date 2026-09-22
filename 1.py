@@ -233,7 +233,7 @@ Atsakymas:
 {devinta()}
 \n""")
 
-print(f"""# 10. gauti matricos diagonalinius elementus - negaliam panaudoti daug
+print(f"""# 10. gauti matricos diagonalinius elementus - negalima panaudoti diag ir t.t.
 Atsakymas:
 {desimta()}
 \n""")
