@@ -11,7 +11,7 @@ from data_client import DataClient
 from alpaca.data import TimeFrame
 import mplfinance as mpf
 from helper import rename_cols
-from heap import MinHeap
+import heapq as hq
 
 START_DATE=datetime.date(2026, 8, 1)
 END_DATE=datetime.date(2026, 9, 1)
@@ -24,7 +24,7 @@ client = DataClient(os.getenv("ALPACA_API_KEY"), os.getenv("ALPACA_SECRET"))
 with ThreadPoolExecutor(max_workers=3) as executor:
     day = executor.submit(client.fetch_bar_data, TICKER, START_DATE, END_DATE, 100, TimeFrame.Day)
     minute = executor.submit(client.fetch_bar_data, TICKER, START_DATE, END_DATE, 100, TimeFrame.Minute)
-    tick = executor.submit(client.fetch_tick_data, TICKER, START_DATE, END_DATE, 1000)
+    tick = executor.submit(client.fetch_tick_data, TICKER, START_DATE, END_DATE, 10000)
 
     day_df = day.result().df
     minute_df = minute.result().df
@@ -65,21 +65,44 @@ else:
 
 # ------ 4 PAPILDOMA -------
 
-minheap = MinHeap(capacity=10)
-
 if not tick_df.empty:
     ticks = tick_df.xs(TICKER, level="symbol").sort_index()
     prev_ts = None
+    pauses = []
+    hq.heapify(pauses)
 
     for timestamp, row in ticks.iterrows():
         if prev_ts is not None:
             gap_seconds = (timestamp - prev_ts).total_seconds()
-            minheap.insert(row, gap_seconds)
+            if len(pauses) < 10:
+                hq.heappush(pauses, (gap_seconds, row.name))
+            elif gap_seconds > pauses[0][0]:
+                hq.heappushpop(pauses, (gap_seconds, row.name))
+
+
         prev_ts = timestamp
 
-    print("10 didžiausių pertraukų tarp sandorių:")
-    for gap_seconds, row in sorted(minheap.heap, key=lambda entry: entry[0], reverse=True):
-        print(f"{gap_seconds:.6f}s @ {row.name}")
+    print(f"10 didžiausių petraukų: ")
+    for p in pauses:
+        print(f"{p[0]}s @ {p[1]}")
+else:
+    print("No tick data")
+
+
+# ------ 5 PAPILDOMA -------
+
+if not tick_df.empty:
+    ticks = tick_df.xs(TICKER, level="symbol").sort_index()
+    hbars = ticks.resample("1min", closed="left", label="left").agg(
+        Open=("price", "first"),
+        High=("price", "max"),
+        Low=("price", "min"),
+        Close=("price", "last"),
+    ).dropna(subset=["Open"])
+
+    mpf.plot(hbars, type="candle", style="yahoo", title=f"{TICKER} Minutės žvakės iš tikinių duomenų", returnfig=True)
+else:
+    print("No tick data")
 
 plt.show()
 mpf.show()
