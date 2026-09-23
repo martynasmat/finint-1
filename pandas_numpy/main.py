@@ -1,3 +1,7 @@
+# Martynas Mataitis VU ISI III k. 2026.09.01
+# Finansinis intelektas - 1 ND (1 dalis)
+
+
 import pandas as pd
 import numpy as np
 import datetime
